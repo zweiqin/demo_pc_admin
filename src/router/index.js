@@ -10,6 +10,7 @@ import Layout from '@/layout'
 import zhAi from './modules/zh-ai'
 import admin from './modules/admin'
 import menu from './modules/menu'
+import merchant from './modules/merchant'
 
 /**
  * Note: sub-menu only appear when route children.length >= 1
@@ -63,6 +64,7 @@ export const constantRoutes = [
   zhAi,
   admin,
   menu,
+  merchant,
   {
     path: '/404',
     component: () => import('@/views/error-page/404'),
