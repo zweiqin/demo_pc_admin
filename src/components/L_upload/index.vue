@@ -30,7 +30,7 @@ export default {
 	data(){
 		return{
       fileList: [],
-      url: process.env.VUE_APP_BASE_API + '/api/v1/merchant/secretKey/upload/',//上传并非在此组件
+      url: process.env.VUE_APP_BASE_API + '/api/v1/admin/secretKey/upload/',//上传并非在此组件
       uploadHeaders:{"token":getToken()},
 		}
 	},
@@ -92,5 +92,5 @@ export default {
 }
 
 
- 
+
 </style>
