@@ -6,12 +6,38 @@
         <div class="container">
           <el-form inline size="small" :label-position="labelPosition">
 
+            <!-- <el-form-item label="服务范围">
+              <el-select
+                v-model="infoForm.services"
+                clearable
+                placeholder="请选择"
+                class="selWidth"
+                @change="get_list(1)"
+              />
+            </el-form-item> -->
+
             <el-form-item label="员工账号：" style="display:inline-block">
               <el-input v-model="infoForm.account" placeholder="请输入员工账号" clearable />
             </el-form-item>
 
             <el-form-item label="员工姓名：" style="display:inline-block">
               <el-input v-model="infoForm.real_name" placeholder="请输入员工姓名" clearable />
+            </el-form-item>
+
+            <el-form-item label="员工状态">
+              <el-select
+                v-model="infoForm.state_id"
+                placeholder="请选择"
+                class="selWidth"
+                @change="get_list(1)"
+              >
+                <el-option
+                  v-for="item in state_list"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id">
+                </el-option>
+              </el-select>
             </el-form-item>
 
             <el-button class="ResetSearch mr10" size="small" type="reset" @click="reset('infoForm')">重置</el-button>
@@ -22,8 +48,8 @@
 
         <el-button type="primary" label="default" size="small" @click="add_click()">新增员工</el-button>
         <!-- 👇可以改成在搜索去添加一个是否是已删除员工的搜索条件 -->
-        <el-button v-if="is_del == 0" type="danger" label="default" size="small" @click="had_del_staff">已删除员工</el-button>
-        <el-button v-else type="success" label="default" size="small" @click="had_nodel_staff">在线员工</el-button>
+        <!-- <el-button v-if="is_del == 0" type="danger" label="default" size="small" @click="had_del_staff">已删除员工</el-button>
+        <el-button v-else type="success" label="default" size="small" @click="had_nodel_staff">在线员工</el-button> -->
       </div>
 
       <!-- s表格 -->
@@ -54,13 +80,15 @@
             {{get_role_name(scope.row)}}
           </template>
         </el-table-column>
+        
+        <el-table-column prop="state_name" label="员工状态" min-width="100" />
 
         <el-table-column label="操作" min-width="120" fixed="right" align="center">
           <template slot-scope="scope">
             <el-button v-if="!is_del" type="text" size="small" class="mr10" @click="change_pwd(scope.row)">修改密码</el-button>
             <el-button v-if="!is_del && is_max(scope.row)" type="text" size="small" class="mr10" @click="edit(scope.row.admin_id)">编辑</el-button>
             <el-button v-if="!is_del && is_max(scope.row)" type="text" size="small" class="mr10" @click="del(scope.row)">删除</el-button>
-            <!-- <el-button v-if="!is_del" type="text" size="small" class="mr10" @click="edit_state(scope.row)">编辑员工状态</el-button> -->
+            <el-button v-if="!is_del" type="text" size="small" class="mr10" @click="edit_state(scope.row)">编辑员工状态</el-button>
             <el-button v-if="is_del" type="text" size="small" class="mr10" @click="recover(scope.row)">恢复</el-button>
           </template>
         </el-table-column>
@@ -96,7 +124,7 @@
 
         <!-- s总门店角色 -->
 
-        <el-table :data="allAddWorkInfo" :header-cell-style="{background:'#F5F7FA',color:'#2F3033',fontWeight:'normal'}" style="width: 100%" size="small" highlight-current-row>
+        <!-- <el-table :data="allAddWorkInfo" :header-cell-style="{background:'#F5F7FA',color:'#2F3033',fontWeight:'normal'}" style="width: 100%" size="small" highlight-current-row>
           <el-table-column label="请选择角色" min-width="100">
             <template slot-scope="scope">
                 <el-select v-model="scope.row.role_id" placeholder="请选择角色" @change="my_select(scope.row,scope.$index,'allAddWorkInfo')">
@@ -116,7 +144,7 @@
             </template>
           </el-table-column>
         </el-table>
-        <el-button size="small" class="addBtn" @click="all_add_role">添加</el-button>
+        <el-button size="small" class="addBtn" @click="all_add_role">添加</el-button> -->
         <!-- s总门店角色 -->
 
         <div style="margin-top: 10px;"></div>
@@ -143,7 +171,7 @@
         </el-form-item>
 
         <!-- s总门店角色 -->
-        <el-table :data="allEditWorkInfo" :header-cell-style="{background:'#F5F7FA',color:'#2F3033',fontWeight:'normal'}" style="width: 100%" size="small" highlight-current-row>
+        <!-- <el-table :data="allEditWorkInfo" :header-cell-style="{background:'#F5F7FA',color:'#2F3033',fontWeight:'normal'}" style="width: 100%" size="small" highlight-current-row>
 
           <el-table-column prop="role" label="总后台角色" min-width="100">
             <template slot-scope="scope">
@@ -165,7 +193,7 @@
           </el-table-column>
 
         </el-table>
-        <el-button size="small" class="editBtn" @click="all_edit_role">添加</el-button>
+        <el-button size="small" class="editBtn" @click="all_edit_role">添加</el-button> -->
         <!-- s总门店角色 -->
         <!-- s角色 -->
         <div style="margin-top: 10px;"></div>
@@ -379,7 +407,7 @@ export default {
     this.get_admin_role();
     // this.get_mer_role();
     // this.get_mer_list();
-    // this.get_state_list()
+    this.get_state_list()
   },
   methods: {
     //修改员工状态
@@ -444,40 +472,37 @@ export default {
         }
       })
     },
-
     //打开编辑员工状态对话框
-    // edit_state(e) {
-    //   this.state_visible = true
-    //   this.stateForm.admin_id = e.admin_id
-    //   if(e.admin_roles_list.length != 0) {
-    //     let data = {},all = []
-    //     e.admin_roles_list.forEach(item => {
-    //       data.role_id = item.role_id
-    //       all.push(JSON.parse(JSON.stringify(data)))
-    //     })
-    //     this.allEditWorkInfo = all
-    //   }
-    //   if(e.state_id != 0) {
-    //     this.stateForm.state_id = e.state_id
-    //   }
+    edit_state(e) {
+      this.state_visible = true
+      this.stateForm.admin_id = e.admin_id
+      if(e.admin_roles_list.length != 0) {
+        let data = {},all = []
+        e.admin_roles_list.forEach(item => {
+          data.role_id = item.role_id
+          all.push(JSON.parse(JSON.stringify(data)))
+        })
+        this.allEditWorkInfo = all
+      }
+      if(e.state_id != 0) {
+        this.stateForm.state_id = e.state_id
+      }
       
-    // },
-
+    },
     //员工状态列表
-    // get_state_list() {
-    //   //注：总后台：admin_type:0,mer_id:0    商户端：admin_type:2,mer_id:localstorage.get('admin_info').mer_id
-    //   get_state({admin_type:0,mer_id:0})
-    //   .then(res => {
-    //     if (res.status === 200) {
-    //       this.select_state_list = JSON.parse(JSON.stringify(res.data))
-    //       res.data.splice(0,0,{id:'',name:'全部'})
-    //       this.state_list = res.data
-    //     }
-    //   }).catch(err => {
-    //     this.$message.error(err.data.data)
-    //   })
-    // },
-
+    get_state_list() {
+      //注：总后台：admin_type:0,mer_id:0    商户端：admin_type:2,mer_id:localstorage.get('admin_info').mer_id
+      get_state({admin_type:0,mer_id:0})
+      .then(res => {
+        if (res.status === 200) {
+          this.select_state_list = JSON.parse(JSON.stringify(res.data))
+          res.data.splice(0,0,{id:'',name:'全部'})
+          this.state_list = res.data
+        }
+      }).catch(err => {
+        this.$message.error(err.data.data)
+      })
+    },
     is_max(row){
       if(row.admin_roles_list) {
         let roles = row.admin_roles_list
@@ -555,6 +580,16 @@ export default {
         }
       }
     },
+    //取所有门店
+    async get_mer_list(){
+      // await mer_search({search:'',page:1,limit:''})
+      //   .then(res => {
+      //     this.mer_list = res.data.items
+      //   })
+      //   .catch(err =>{
+      //     this.$message.error(err.data.data)
+      //   })
+    },
     //取总后台角色
     async get_admin_role(){
       await role_search({role_type:0,mer_id:0,provider_id:0,is_developers:0})
@@ -575,6 +610,16 @@ export default {
           this.$message.error(res.data.data)
         })
     },
+    // //取所有分组信息
+    // async get_group(){
+    //   await group_search(this.groupForm)
+    //           .then(res =>{
+    //             this.group_list = res.data
+    //           })
+    //           .catch(err =>{
+    //             this.$message.error(err.data.data)
+    //           })
+    //   },
 
     //查询
     info_search() {
@@ -703,44 +748,44 @@ export default {
       this.$refs[formName].validate(async valid => {
         // 若必填项不为空
         if (valid) {
-          let flag = 0;
+          // let flag = 0;
           let add_data = {};
-          let data = JSON.parse(JSON.stringify(this.allAddWorkInfo));
-          this.allAddWorkInfo.forEach(item => {
-            if(item.role_id == ''){
-              this.$message.error('请选择总后台角色！') 
-              flag = 1
-              return false;
-            }else{
-              this.addWorkInfo.forEach(item => {
-                if(item.role_id == ''){
-                  this.$message.error('请选择门店角色！')
-                  flag = 1
-                  return false;
-                }
-                if(item.mer_list.length == 0){
-                  this.$message.error('店铺角色必须指定服务范围。')
-                  flag = 1
-                  return false;
-                }
-              })
-            }
-          })
-          if(flag == 0){
-            data.push.apply(data,this.addWorkInfo)
-            if(data.length == 0){
-              this.$message.error('请创建角色。')
-            }else{
+          // let data = JSON.parse(JSON.stringify(this.allAddWorkInfo));
+          // this.allAddWorkInfo.forEach(item => {
+          //   if(item.role_id == ''){
+          //     this.$message.error('请选择总后台角色！')
+          //     flag = 1
+          //     return false;
+          //   }else{
+          //     this.addWorkInfo.forEach(item => {
+          //       if(item.role_id == ''){
+          //         this.$message.error('请选择门店角色！')
+          //         flag = 1
+          //         return false;
+          //       }
+          //       if(item.mer_list.length == 0){
+          //         this.$message.error('店铺角色必须指定服务范围。')
+          //         flag = 1
+          //         return false;
+          //       }
+          //     })
+          //   }
+          // })
+          // if(flag == 0){
+          //   data.push.apply(data,this.addWorkInfo)
+          //   if(data.length == 0){
+          //     this.$message.error('请创建角色。')
+          //   }else{
               add_data.account = this.addForm.account
               add_data.real_name = this.addForm.real_name
               add_data.department = this.addForm.department
               add_data.admin_type = this.addForm.admin_type
               add_data.mer_id = this.addForm.mer_id
               add_data.provider_id = this.addForm.provider_id
-              let data2 = JSON.parse(JSON.stringify(data))
-              add_data.admin_roles_list = data2.map(item => {
-                return item.role_id
-              })
+              // let data2 = JSON.parse(JSON.stringify(data))
+              // add_data.admin_roles_list = data2.map(item => {
+              //   return item.role_id
+              // })
 
               admin_create(add_data)
                 .then(res => {
@@ -753,10 +798,10 @@ export default {
                 })
             }
 
-          }
-        } else {
-          return false
-        }
+          // }
+      //   } else {
+      //     return false
+      //   }
       })
     },
     // e新增员工
@@ -797,34 +842,34 @@ export default {
       this.$refs[formName].validate(async valid => {
         // 若必填项不为空
         if (valid) {
-          let flag = 0;
+          // let flag = 0;
           let add_data = {};
-          let data = JSON.parse(JSON.stringify(this.allEditWorkInfo));
-          this.allEditWorkInfo.forEach(item => {
-            if(item.role_id == ''){
-              this.$message.error('请选择总后台角色！')
-              flag = 1
-              return false;
-            }else{
-              this.editWorkInfo.forEach(item => {
-                if(item.role_id == ''){
-                  this.$message.error('请选择门店角色！')
-                  flag = 1
-                  return false;
-                }
-                if(item.mer_list.length == 0){
-                  this.$message.error('店铺角色必须指定服务范围。')
-                  flag = 1
-                  return false;
-                }
-              })
-            }
-          })
-          if(flag == 0){
-            data.push.apply(data,this.editWorkInfo)
-            if(data.length == 0){
-              this.$message.error('请创建角色。')
-            }else{
+          // let data = JSON.parse(JSON.stringify(this.allEditWorkInfo));
+          // this.allEditWorkInfo.forEach(item => {
+          //   if(item.role_id == ''){
+          //     this.$message.error('请选择总后台角色！')
+          //     flag = 1
+          //     return false;
+          //   }else{
+          //     this.editWorkInfo.forEach(item => {
+          //       if(item.role_id == ''){
+          //         this.$message.error('请选择门店角色！')
+          //         flag = 1
+          //         return false;
+          //       }
+          //       if(item.mer_list.length == 0){
+          //         this.$message.error('店铺角色必须指定服务范围。')
+          //         flag = 1
+          //         return false;
+          //       }
+          //     })
+          //   }
+          // })
+          // if(flag == 0){
+          //   data.push.apply(data,this.editWorkInfo)
+          //   if(data.length == 0){
+          //     this.$message.error('请创建角色。')
+          //   }else{
               add_data.admin_id = this.editForm.admin_id
               add_data.account = this.editForm.account
               add_data.real_name = this.editForm.real_name
@@ -832,10 +877,10 @@ export default {
               add_data.admin_type = this.editForm.admin_type
               add_data.mer_id = this.editForm.mer_id
               add_data.provider_id = this.editForm.provider_id
-              let data2 = JSON.parse(JSON.stringify(data))
-              add_data.admin_roles_list = data2.map(item => {
-                return item.role_id
-              })
+              // let data2 = JSON.parse(JSON.stringify(data))
+              // add_data.admin_roles_list = data2.map(item => {
+              //   return item.role_id
+              // })
               admin_create(add_data)
                 .then(res => {
                   this.$message.success('修改成功！')
@@ -847,10 +892,10 @@ export default {
                 })
             }
 
-          }
-        } else {
-          return false
-        }
+          // }
+        // } else {
+        //   return false
+        // }
       })
     },
     // e编辑员工

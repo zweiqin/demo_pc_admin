@@ -30,18 +30,6 @@ const admin = {
       name: '员工信息',
       meta: { title: '员工信息' }
     },
-    {
-      path: '/admin/attendance',
-      component: () => import('@/views/admin/attendance'),
-      name: '员工考勤',
-      meta: { title: '员工考勤' }
-    },
-    {
-      path: '/admin/state',
-      component: () => import('@/views/admin/state'),
-      name: '员工状态',
-      meta: { title: '员工状态' }
-    },
   ]
 }
   

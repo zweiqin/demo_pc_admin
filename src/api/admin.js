@@ -33,38 +33,3 @@ export function admin_create(data) {
 export function admin_details(data) {
   return request_cong.get('/api/v1/admin/user/'+data)
 }
-
-//考勤汇总列表查询/demo
-export function get_admin_work_count(data) {
-  return request_cong.get('/administrator/adminWorkTime/summary/', data)
-}
-
-//下载考勤汇总/demo
-export function download_admin_work(data) {
-  return request_cong.post('/administrator/adminWorkTime/summary/', data)
-}
-
-/* 
-**员工状态
-**
- */
-//查询员工状态列表/demo
-export function get_state(data) {
-  return request_cong.get('/api/v1/admin/state/',data)
-}
-
-//新增/修改状态/demo
-export function add_state(data) {
-  return request_cong.post('/api/v1/admin/state/', data)
-}
-
-//后台用户状态设置/demo
-export function set_state(data) {
-  return request_cong.post('/api/v1/admin/User/state/setUp/', data)
-}
-
-
-//删除后台用户状态/demo
-export function del_state(data) {
-  return request_cong.delete(`/api/v1/admin/state/${data}`)
-}
