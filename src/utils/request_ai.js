@@ -18,11 +18,11 @@ function baseRequest(options) {
   const headers = options.headers || {}
   headers['token'] = token
   options.headers = headers
-  // if (options.login && !token) {
-  //   console.log(store.getters.token)
-  //   console.log('options',options)
-  //   return Promise.reject({ msg: '未登录', toLogin: true })
-  // }
+  if (options.login && !token) {
+    console.log(store.getters.token)
+    console.log('options',options)
+    return Promise.reject({ msg: '未登录', toLogin: true })
+  }
   return instance(options).then(res => {
     const data = res.data || {}
     if (res.status !== 200) { return Promise.reject({ msg: '请求失败', res, data }) }
