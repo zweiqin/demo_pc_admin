@@ -37,11 +37,11 @@
 
         <el-table-column prop="mer_name" label="商户名称" min-width="100" />
 
-        <el-table-column prop="real_name" label="商户负责人" min-width="100" />
-
         <el-table-column prop="mer_phone" label="商户联系电话" min-width="100" />
 
         <el-table-column prop="mer_admin_phone" label="管理员联系电话" min-width="100" />
+
+        <el-table-column prop="license" label="营业执照" min-width="100" />
 
         <el-table-column prop="mer_address" label="商户地址" min-width="100" />
 
@@ -93,10 +93,6 @@
           <el-input v-model="addForm.mer_name" autocomplete="off" placeholder="请输入门店名称" />
         </el-form-item>
 
-        <el-form-item label="商户负责人：" :label-width="formLabelWidth" prop="real_name">
-          <el-input v-model="addForm.real_name" autocomplete="off" placeholder="请输入门店负责人" />
-        </el-form-item>
-
         <el-form-item label="商户地址：" :label-width="formLabelWidth" prop="mer_address">
           <el-input v-model="addForm.mer_address" autocomplete="off" placeholder="请输入门店地址" />
         </el-form-item>
@@ -107,6 +103,10 @@
 
         <el-form-item label="管理员电话：" :label-width="formLabelWidth" prop="mer_admin_phone">
           <el-input v-model="addForm.mer_admin_phone" autocomplete="off" placeholder="请输入管理员电话(登录使用)" />
+        </el-form-item>
+
+        <el-form-item label="营业执照：" :label-width="formLabelWidth" prop="license">
+          <el-input v-model="addForm.license" autocomplete="off" placeholder="请输入营业执照" />
         </el-form-item>
 
         <el-form-item label="商户备注：" :label-width="formLabelWidth">
@@ -130,16 +130,16 @@
           <el-input v-model="editForm.mer_name" autocomplete="off" placeholder="请输入门店名称" />
         </el-form-item>
 
-        <el-form-item label="商户负责人：" :label-width="formLabelWidth" prop="real_name">
-          <el-input v-model="editForm.real_name" autocomplete="off" placeholder="请输入门店负责人" />
-        </el-form-item>
-
         <el-form-item label="商户地址：" :label-width="formLabelWidth" prop="mer_address">
           <el-input v-model="editForm.mer_address" autocomplete="off" placeholder="请输入门店地址" />
         </el-form-item>
 
         <el-form-item label="商户联系电话：" :label-width="formLabelWidth" prop="mer_phone">
           <el-input v-model="editForm.mer_phone" autocomplete="off" placeholder="请输入门店联系电话" />
+        </el-form-item>
+
+        <el-form-item label="营业执照：" :label-width="formLabelWidth" prop="license">
+          <el-input v-model="editForm.license" autocomplete="off" placeholder="请输入营业执照" />
         </el-form-item>
 
         <el-form-item label="商户备注：" :label-width="formLabelWidth">
@@ -180,33 +180,34 @@ export default {
       add_visible: false,
       addForm: {
         mer_name: '',
-        real_name: '',
         mer_phone: '',
         mer_admin_phone:'',
         mer_address: '',
-        remark:''
+        remark:'',
+        license:''
       },
       addRules: {
         mer_name: [{ required: true, message: '商户名称不能为空', change: 'blue' }],
-        real_name: [{ required: true, message: '商户负责人不能为空', change: 'blue' }],
         mer_admin_phone: [{ required: true, message: '管理员电话(登录使用)不能为空', change: 'blue' }],
         mer_address: [{ required: true, message: '商户地址不能为空', change: 'blue' }],
+        license: [{ required: true, message: '营业执照不能为空', change: 'blue' }],
       },
       // 编辑
       edit_visible: false,
       editForm: {
         mer_id: '',
         mer_name: '',
-        real_name: '',
         mer_phone: '',
         mer_admin_phone:'',
         mer_address: '',
-        remark:''
+        remark:'',
+        license:''
       },
       editRules: {
         mer_name: [{ required: true, message: '门店名称不能为空', change: 'blue' }],
         real_name: [{ required: true, message: '门店负责人不能为空', change: 'blue' }],
         mer_address: [{ required: true, message: '门店地址不能为空', change: 'blue' }],
+        license: [{ required: true, message: '营业执照不能为空', change: 'blue' }],
       }
     }
   },
@@ -308,12 +309,12 @@ export default {
     edit(e) {
       this.editForm.mer_name = e.mer_name
       this.editForm.mer_id = e.mer_id
-      this.editForm.real_name = e.real_name
       this.editForm.mer_phone = e.mer_phone
       this.editForm.mer_admin_phone = e.mer_admin_phone
       this.editForm.mer_address = e.mer_address
       this.editForm.commission_rate = e.commission_rate
       this.editForm.remark = e.remark
+      this.editForm.license = e.license
       this.edit_visible = true
     },
     // 编辑--确认
