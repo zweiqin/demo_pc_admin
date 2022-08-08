@@ -19,20 +19,12 @@ const admin = {
       meta: { title: '员工权限' }
     },
     {
-      path: '/admin/group',
-      component: () => import('@/views/admin/group'),
-      name: '员工分组',
-      meta: { title: '员工分组' }
-    },
-    {
       path: '/admin/info',
       component: () => import('@/views/admin/info'),
       name: '员工信息',
       meta: { title: '员工信息' }
-    },
+    }
   ]
 }
-  
-
 
 export default admin

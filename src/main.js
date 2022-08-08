@@ -25,9 +25,15 @@ import * as filters from './filters' // global filters
 
 import './utils/directives'
 
-import {Base64} from 'js-base64'
+import { Base64 } from 'js-base64'
+import DeepClone from './utils/deepClone/index'
+import Compute from './utils/compute/index'
 import './styles/iconfont.css'
-Vue.use(Base64);
+Vue.use(Base64)
+
+Vue.use(DeepClone)
+
+Vue.use(Compute)
 
 // 引入表格
 // import 'xe-utils'
@@ -52,7 +58,7 @@ Vue.prototype.$moment = moment
 Vue.component('vue-ueditor-wrap', VueUeditorWrap)
 
 Vue.use(Element, {
-  size: Cookies.get('size') || 'medium', // set element-ui default size
+  size: Cookies.get('size') || 'medium' // set element-ui default size
   // locale: enLang // 如果使用中文，无需设置，请删除
 })
 
@@ -60,18 +66,18 @@ Vue.use(Element, {
 Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])
 })
-var _hmt = _hmt || [];
+var _hmt = _hmt || []
 router.beforeEach((to, from, next) => {
   /* 路由发生变化修改页面title */
   if (_hmt) {
     if (to.path) {
-      _hmt.push(['_trackPageview', '/#' + to.fullPath]);
+      _hmt.push(['_trackPageview', '/#' + to.fullPath])
     }
   }
   // if (to.meta.title) {
   //   document.title = to.meta.title + '-' + JSON.parse(Cookies.get('MerInfo')).login_title
   // }
-  next();
+  next()
 })
 
 Vue.config.productionTip = false

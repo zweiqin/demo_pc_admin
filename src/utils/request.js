@@ -2,6 +2,7 @@ import axios from 'axios'
 import { MessageBox, Message } from 'element-ui'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
+import router from '@/router'
 
 const instance = axios.create({
   baseURL: process.env.VUE_APP_BASE_API,
@@ -10,14 +11,16 @@ const instance = axios.create({
 
 const defaultOpt = { login: true }
 
+let done = true
+
 function baseRequest(options) {
-  const token = store.getters.token
+  const token = getToken()
   const headers = options.headers || {}
-  // headers['Content-Type'] = 'multipart/form-data';
-  headers['X-Token'] = token
+  headers['token'] = token
   options.headers = headers
   if (options.login && !token) {
-    console.log(123123)
+    console.log(store.getters.token)
+    console.log('options', options)
     return Promise.reject({ msg: '未登录', toLogin: true })
   }
   return instance(options).then(res => {
@@ -25,12 +28,43 @@ function baseRequest(options) {
     if (res.status !== 200) { return Promise.reject({ msg: '请求失败', res, data }) }
 
     if ([410000, 410001, 410002].indexOf(data.status) !== -1) {
-      console.log(9999999999)
-      return Promise.reject({ msg: res.data.msg, res, data, toLogin: true })
+      store.dispatch('user/resetToken').then(() => {
+        location.reload()
+      })
+    } else if (data.status === 401) {
+      // 所有的reject都被catch捕获
+      return Promise.reject({ msg: res.data.msg, res, data })
     } else if (data.status === 200) {
       return Promise.resolve(data, res)
     } else {
       return Promise.reject({ msg: res.data.msg, res, data })
+    }
+  }).catch((err) => {
+    console.log(err.response || err, 'err_status')
+    // 403的reject是axios自动reject，带有response(相当于then中reject的数据结构多嵌套了一层response)。需要判断跳到首页，其他err的返回同then中的reject内容保持一致，其他页面代码可以不需要修改
+    if (err.response && err.response.status == 403) {
+      store.dispatch('user/logout')
+      // 403则重回首页，采用节流的写法
+      if (done) {
+        done = false
+        MessageBox.alert('非法操作,请重新登录！', '操作异常', {
+          confirmButtonText: '确定',
+          callback: action => {
+            // 跳转登录页   callback点击确定按钮后的回调函数
+            router.replace({
+              path: '/login'
+            })
+          }
+        })
+        setTimeout(() => {		// 计时结束后再置为可执行
+          done = true
+        }, 1000)
+      }
+    } else if (err.response && err.response.status == 500) {
+      Message.error('服务器错误！')
+    } else {
+      const data = err.data
+      return Promise.reject({ msg: data.msg, err, data })
     }
   })
 }
