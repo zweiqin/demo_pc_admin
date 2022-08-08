@@ -30,7 +30,7 @@ module.exports = {
   // assetsDir:'system',
   // indexPath: process.env.NODE_ENV === 'development' ? 'index.html' : 'admin.html',
   // lintOnSave: process.env.NODE_ENV === 'development',
-  lintOnSave: false,
+  lintOnSave: true,
   productionSourceMap: false,
   devServer: {
     port: port,
