@@ -162,7 +162,7 @@ export default {
               this.$router.push({ path: pc_menu_list[0].route })
             }
           }).catch(err => {
-            this.$message.error(err.data.data)
+            this.$message.error(err.data.msg)
             this.loading = false
           })
         } else {

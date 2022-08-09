@@ -11,30 +11,30 @@
         <!-- e添加新角色 -->
 
         <!-- s内容 -->  <!-- is_show_bottom判断是否显示编辑&删除，默认是0，即不显示 -->
-        <div class="content_card" v-for="(item, index) in card_list" :key="index" @mouseover="mouse_over(item)" @mouseleave="mouse_leave(item)">
+        <div v-for="(item, index) in card_list" :key="index" class="content_card" @mouseover="mouse_over(item)" @mouseleave="mouse_leave(item)">
           <!-- s左 -->
           <div class="left" :class="[item.card_name == '总部' ? 'l_total_bgc' : 'l_branch_bgc']">
-            <el-image style="width: 30%" :src="headquarters" fit="fill" v-if="item.card_name == '总部'"></el-image>
-            <el-image style="width: 30%" :src="branchStore" fit="fill" v-else></el-image>
-            <div class="text">{{item.card_name}}</div>
+            <el-image v-if="item.card_name == '总部'" style="width: 30%" :src="headquarters" fit="fill"></el-image>
+            <el-image v-else style="width: 30%" :src="branchStore" fit="fill"></el-image>
+            <div class="text">{{ item.card_name }}</div>
           </div>
           <!-- e左 -->
           <!-- s右 -->
           <div class="right" :class="[item.card_name == '总部' ? 'r_total_bgc' : 'r_branch_bgc']">
             <!-- 上 -->
             <div class="top">
-              <span class="circle" :class="[item.card_name == '总部' ? 'c_total_bgc' : 'c_branch_bgc']">{{item.role_name.slice(0,1)}}</span>
-              <span class="text">{{item.role_name}}</span>
+              <span class="circle" :class="[item.card_name == '总部' ? 'c_total_bgc' : 'c_branch_bgc']">{{ item.role_name.slice(0,1) }}</span>
+              <span class="text">{{ item.role_name }}</span>
             </div>
             <!-- 下 -->
             <div class="bottom">
-              员工数 {{item.num}}
+              员工数 {{ item.num }}
             </div>
           </div>
           <!-- e右 -->
 
           <!-- s底部编辑&删除 -->
-          <div class="bottom_pop" v-show="item.is_show_bottom">
+          <div v-show="item.is_show_bottom" class="bottom_pop">
             <div class="text">
               <el-button type="text" class="edit edit_mr" @click="edit(item)">编辑</el-button>
               <el-button type="text" class="edit" @click="del(item.role_id)">删除</el-button>
@@ -53,7 +53,7 @@
       <el-form ref="addForm" :model="addForm" :rules="addRules">
 
         <el-form-item label="角色名称：" :label-width="formLabelWidth" prop="role_name">
-          <el-input v-model="addForm.role_name" autocomplete="off" placeholder="请输入角色名称" style="width: 198px"/>
+          <el-input v-model="addForm.role_name" autocomplete="off" placeholder="请输入角色名称" style="width: 198px" />
         </el-form-item>
 
         <el-form-item label="适用范围：" :label-width="formLabelWidth">
@@ -72,7 +72,7 @@
               show-checkbox
               node-key="menu_id"
               :default-checked-keys="pc_check"
-              @check = "my_pc_check"
+              @check="my_pc_check"
             >
             </el-tree>
           </el-tab-pane>
@@ -84,7 +84,7 @@
               show-checkbox
               node-key="menu_id"
               :default-checked-keys="mobile_check"
-              @check = "my_mobile_check"
+              @check="my_mobile_check"
             >
             </el-tree>
 
@@ -105,7 +105,7 @@
       <el-form ref="editForm" :model="editForm" :rules="editRules">
 
         <el-form-item label="角色名称：" :label-width="formLabelWidth" prop="role_name">
-          <el-input v-model="editForm.role_name" autocomplete="off" placeholder="请输入角色名称" style="width: 198px"/>
+          <el-input v-model="editForm.role_name" autocomplete="off" placeholder="请输入角色名称" style="width: 198px" />
         </el-form-item>
 
         <el-form-item label="适用范围：" :label-width="formLabelWidth">
@@ -125,7 +125,7 @@
               show-checkbox
               node-key="menu_id"
               :default-checked-keys="pc_check"
-              @check = "my_pc_check"
+              @check="my_pc_check"
             >
             </el-tree>
           </el-tab-pane>
@@ -137,7 +137,7 @@
               show-checkbox
               node-key="menu_id"
               :default-checked-keys="mobile_check"
-              @check = "my_mobile_check"
+              @check="my_mobile_check"
             >
             </el-tree>
           </el-tab-pane>
@@ -158,20 +158,20 @@ import { menu_search_type } from '@/api/system_menu'
 export default {
   data() {
     return {
-      //修改时返回的pc端默认选中的节点
-      pc_check:[],
-      //修改时返回的mobile端默认选中的节点
-      mobile_check:[],
-      //选择好的pc端节点
+      // 修改时返回的pc端默认选中的节点
+      pc_check: [],
+      // 修改时返回的mobile端默认选中的节点
+      mobile_check: [],
+      // 选择好的pc端节点
       pc_menus: [],
-      //先择好的移动端节点
+      // 先择好的移动端节点
       mobile_menus: [],
       range: '0',
-      //总后台PC,移动端所有菜单
-      admin_menu_list:[],
-      //店铺后台PC,移动端所有菜单
-      mer_menu_list:[],
-      provider_menu_list:[],
+      // 总后台PC,移动端所有菜单
+      admin_menu_list: [],
+      // 店铺后台PC,移动端所有菜单
+      mer_menu_list: [],
+      provider_menu_list: [],
       formLabelWidth: '120px',
       headquarters: require('@/assets/images/headquarters.png'),
       branchStore: require('@/assets/images/branchStore.png'),
@@ -183,8 +183,8 @@ export default {
         rules: '',
         rules_mobile: '',
         role_type: 0,
-        mer_id:0,
-        provider_id:0
+        mer_id: 0,
+        provider_id: 0
       },
       addRules: {
         role_name: [{ required: true, message: '角色名称不能为空', change: 'blue' }]
@@ -228,20 +228,20 @@ export default {
       },
       edit_phone_data: [],
       edit_phone_mode: '',
-      edit_active_name: 'first',
+      edit_active_name: 'first'
     }
   },
   watch: {
-    range: function (val){
-      if(val == 0){
+    range: function (val) {
+      if (val == 0) {
         this.add_pc_data = this.admin_menu_list.pcMenu
         this.add_phone_data = this.admin_menu_list.AppMenu
         this.pc_menus = []
-      }else if(val == 1){
+      } else if (val == 1) {
         this.add_pc_data = this.mer_menu_list.pcMenu
         this.add_phone_data = this.mer_menu_list.AppMenu
         this.pc_menus = []
-      }else{
+      } else {
         this.add_pc_data = this.provider_menu_list.pcMenu
         this.add_phone_data = this.provider_menu_list.AppMenu
         this.pc_menus = []
@@ -249,14 +249,14 @@ export default {
     }
   },
   created() {
-    this.get_role_list();
+    this.get_role_list()
     this.get_menu_list()
   },
   mounted() {},
 
   methods: {
-    //打开新增窗口
-    add_click(){
+    // 打开新增窗口
+    add_click() {
       this.add_pc_data = this.admin_menu_list.pcMenu
       this.add_phone_data = this.admin_menu_list.AppMenu
       this.pc_check = []
@@ -268,16 +268,16 @@ export default {
       this.add_visible = true
     },
     // 新增--树形控件--电脑端
-    my_pc_check(nodeObj,selectedObj){
+    my_pc_check(nodeObj, selectedObj) {
       this.pc_menus = selectedObj.checkedKeys.concat(selectedObj.halfCheckedKeys)
     },
     // 新增--树形控件--手机端
-    my_mobile_check(nodeObj,selectedObj){
+    my_mobile_check(nodeObj, selectedObj) {
       this.mobile_menus = selectedObj.checkedKeys.concat(selectedObj.halfCheckedKeys)
     },
-    //获取后台的菜单
-    async get_menu_list(){
-      await menu_search_type({menu_type:0})
+    // 获取后台的菜单
+    async get_menu_list() {
+      await menu_search_type({ menu_type: 0 })
         .then(res => {
           this.admin_menu_list = res.data
           this.add_pc_data = this.admin_menu_list.pcMenu
@@ -287,7 +287,7 @@ export default {
           this.$message.error(err.data.data)
         })
 
-      await menu_search_type({menu_type:1})
+      await menu_search_type({ menu_type: 1 })
         .then(res => {
           this.mer_menu_list = res.data
         })
@@ -295,7 +295,7 @@ export default {
           this.$message.error(err.data.data)
         })
 
-      await menu_search_type({menu_type:2})
+      await menu_search_type({ menu_type: 2 })
         .then(res => {
           this.provider_menu_list = res.data
         })
@@ -303,12 +303,12 @@ export default {
           this.$message.error(err.data.data)
         })
     },
-    //获取所有权限
-    get_role_list(){
-      role_search({role_type:'',mer_id:'',provider_id:'',is_developers:1})
+    // 获取所有权限
+    get_role_list() {
+      role_search({ role_type: '', mer_id: '', provider_id: '', is_developers: 1 })
         .then(res => {
           res.data.map(item => {
-            return item.card_name = item.role_type == 0 ? '总部' : item.role_type == 1 ? '服务商' : '商户端'
+            return item.card_name = item.role_type === 0 ? '总部' : item.role_type === 1 ? '服务商' : '商户端'
           })
           this.card_list = res.data
         })
@@ -317,11 +317,11 @@ export default {
         })
     },
     // 鼠标移入时出现编辑&删除
-    mouse_over(e){
+    mouse_over(e) {
       e.is_show_bottom = 1
     },
     // 鼠标移出时隐藏编辑&删除
-    mouse_leave(e){
+    mouse_leave(e) {
       e.is_show_bottom = 0
     },
     // s新增
@@ -334,12 +334,12 @@ export default {
       this.$refs[formName].validate(async valid => {
         // 若必填项不为空
         if (valid) {
-          let rules,rules_mobile = '';
-          if(this.pc_menus.length > 0){
-            rules = JSON.parse(JSON.stringify(this.pc_menus)).join(',');
+          let rules; let rules_mobile = ''
+          if (this.pc_menus.length > 0) {
+            rules = JSON.parse(JSON.stringify(this.pc_menus)).join(',')
           }
-          if(this.mobile_menus.length > 0){
-            rules_mobile = JSON.parse(JSON.stringify(this.mobile_menus)).join(',');
+          if (this.mobile_menus.length > 0) {
+            rules_mobile = JSON.parse(JSON.stringify(this.mobile_menus)).join(',')
           }
           this.addForm.role_type = this.range
           this.addForm.rules = rules
@@ -349,7 +349,7 @@ export default {
             .then(res => {
               this.add_visible = false
               this.$message.success('新增成功')
-              this.get_role_list();
+              this.get_role_list()
             })
             .catch(err => {
               this.$message.error(err.data.data)
@@ -363,16 +363,16 @@ export default {
 
     // s编辑
     // 打开弹框
-    edit(e){
+    edit(e) {
       this.add_pc_data = []
       this.add_phone_data = []
-      if(e.role_type == 0){
+      if (e.role_type === 0) {
         this.add_pc_data = JSON.parse(JSON.stringify(this.admin_menu_list.pcMenu))
         this.add_phone_data = JSON.parse(JSON.stringify(this.admin_menu_list.AppMenu))
-      }else if(e.role_type == 1){
+      } else if (e.role_type === 1) {
         this.add_pc_data = JSON.parse(JSON.stringify(this.mer_menu_list.pcMenu))
         this.add_phone_data = JSON.parse(JSON.stringify(this.mer_menu_list.AppMenu))
-      }else{
+      } else {
         this.add_pc_data = JSON.parse(JSON.stringify(this.provider_menu_list.pcMenu))
         this.add_phone_data = JSON.parse(JSON.stringify(this.provider_menu_list.AppMenu))
       }
@@ -402,12 +402,12 @@ export default {
       this.$refs[formName].validate(async valid => {
         // 若必填项不为空
         if (valid) {
-          let rules,rules_mobile = '';
-          if(this.pc_menus.length > 0){
-            rules = JSON.parse(JSON.stringify(this.pc_menus)).join(',');
+          let rules; let rules_mobile = ''
+          if (this.pc_menus.length > 0) {
+            rules = JSON.parse(JSON.stringify(this.pc_menus)).join(',')
           }
-          if(this.mobile_menus.length > 0){
-            rules_mobile = JSON.parse(JSON.stringify(this.mobile_menus)).join(',');
+          if (this.mobile_menus.length > 0) {
+            rules_mobile = JSON.parse(JSON.stringify(this.mobile_menus)).join(',')
           }
           this.editForm.role_type = this.range
           this.editForm.rules = rules
@@ -416,7 +416,7 @@ export default {
             .then(res => {
               this.edit_visible = false
               this.$message.success('修改成功')
-              this.get_role_list();
+              this.get_role_list()
             })
             .catch(err => {
               this.$message.error(err.data.data)
@@ -429,23 +429,23 @@ export default {
     // e编辑
 
     // 删除
-    del(role_id){
+    del(role_id) {
       this.$confirm('删除后角色将不可用', '确定删除此角色吗？', {
         confirmButtonText: '删除',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        role_del(role_id)
+        operate(role_id)
           .then(res => {
             this.$message.success('删除成功')
-            this.get_role_list();
+            this.get_role_list()
           })
           .catch(err => {
             this.$message.error(err.data.data)
           })
       }).catch(() => {
 
-      });
+      })
     }
   }
 }
