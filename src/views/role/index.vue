@@ -152,7 +152,7 @@
   </div>
 </template>
 <script>
-import { GetRoleList, OperateRole } from '@/api/system_role'
+import { GetRoleList, OperateRole, GetRoleListNoRoot } from '@/api/system_role'
 import { GetMenuByType } from '@/api/system_menu'
 
 export default {
@@ -305,7 +305,7 @@ export default {
     },
     // 获取所有权限
     getRoleList() {
-      GetRoleList({ role_type: '', mer_id: '', provider_id: '', is_developers: 1 })
+      GetRoleListNoRoot({ role_type: '', mer_id: '', provider_id: '', is_developers: 1 })
         .then(res => {
           res.data.map(item => {
             item.card_name = item.role_type === 0 ? '总部' : item.role_type === 1 ? '服务商' : '商户端'
@@ -379,8 +379,10 @@ export default {
       this.editForm.rules = e.rules
       this.editForm.role_id = e.role_id
       this.editForm.role_name = e.role_name
-      this.pc_check = e.rules.split(',')
-      this.mobile_check = e.rules_mobile.split(',')
+      this.pc_check = e.rules.split(',') // 显示已勾选的菜单（定死了就无法改变，仅是初始化使用）
+      this.pc_menus = this.$deepClone(this.pc_check) // 用于确定编辑时传给后端的菜单
+      this.mobile_check = e.rules_mobile.split(',') // 显示已勾选的菜单（定死了就无法改变，仅是初始化使用）
+      this.mobile_menus = this.$deepClone(this.mobile_check) // 用于确定编辑时传给后端的菜单
       this.edit_visible = true
     },
     // 编辑--确认

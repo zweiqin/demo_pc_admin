@@ -144,7 +144,7 @@
   </div>
 </template>
 <script>
-import { GetRoleList, OperateRole } from '@/api/system_role'
+import { GetRoleList, OperateRole, GetRoleListNoRoot } from '@/api/system_role'
 import { GetHighestRole } from '@/api/system_menu'
 
 export default {
@@ -202,7 +202,8 @@ export default {
         role_name: '',
         rules: '',
         rules_mobile: '',
-        role_type: 0
+        role_type: 0,
+        mer_id: 0
       },
       editRules: {
         role_name: [{ required: true, message: '角色名称不能为空', change: 'blue' }]
@@ -268,7 +269,7 @@ export default {
     },
     // 获取所有权限
     getRoleList() {
-      GetRoleList({ role_type: 0, mer_id: 0, provider_id: 0, is_developers: 0 })
+      GetRoleListNoRoot({ role_type: 0, mer_id: 0, provider_id: 0, is_developers: 0 })
         .then(res => {
           res.data.map(item => {
             item.card_name = item.role_type === 0 ? '总部' : item.role_type === 1 ? '服务商' : '商户端'
@@ -342,8 +343,10 @@ export default {
       this.editForm.rules = e.rules
       this.editForm.role_id = e.role_id
       this.editForm.role_name = e.role_name
-      this.pc_check = e.rules.split(',')
-      this.mobile_check = e.rules_mobile.split(',')
+      this.pc_check = e.rules.split(',') // 显示已勾选的菜单（定死了就无法改变，仅是初始化使用）
+      this.pc_menus = this.$deepClone(this.pc_check) // 用于确定编辑时传给后端的菜单
+      this.mobile_check = e.rules_mobile.split(',') // 显示已勾选的菜单（定死了就无法改变，仅是初始化使用）
+      this.mobile_menus = this.$deepClone(this.mobile_check) // 用于确定编辑时传给后端的菜单
       this.edit_visible = true
     },
     // 编辑--确认
@@ -353,10 +356,10 @@ export default {
         if (valid) {
           let rules; let rules_mobile = ''
           if (this.pc_menus.length > 0) {
-            rules = JSON.parse(JSON.stringify(this.pc_menus)).join(',')
+            rules = this.$deepClone(this.pc_menus).join(',')
           }
           if (this.mobile_menus.length > 0) {
-            rules_mobile = JSON.parse(JSON.stringify(this.mobile_menus)).join(',')
+            rules_mobile = this.$deepClone(this.mobile_menus).join(',')
           }
           this.editForm.role_type = this.range
           this.editForm.rules = rules
