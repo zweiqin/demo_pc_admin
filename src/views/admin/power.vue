@@ -405,6 +405,7 @@ export default {
 
 <style lang="scss" scoped>
 .power{
+  padding: 1em;
   .all_card{
     display: flex;
     flex-wrap: wrap; // flex允许换行

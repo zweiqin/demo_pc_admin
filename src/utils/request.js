@@ -28,23 +28,8 @@ function baseRequest(options) {
     if (res.status !== 200) { return Promise.reject({ msg: '请求失败', res, data }) }
 
     if ([410000, 410001, 410002].indexOf(data.status) !== -1) {
-      store.dispatch('user/resetToken').then(() => {
-        location.reload()
-      })
-    } else if (data.status === 401) {
-      // 所有的reject都被catch捕获
-      return Promise.reject({ msg: res.data.msg, res, data })
-    } else if (data.status === 200) {
-      return Promise.resolve(data, res)
-    } else {
-      return Promise.reject({ msg: res.data.msg, res, data })
-    }
-  }).catch((err) => {
-    console.log(err.response || err, 'err_status')
-    // 403的reject是axios自动reject，带有response(相当于then中reject的数据结构多嵌套了一层response)。需要判断跳到首页，其他err的返回同then中的reject内容保持一致，其他页面代码可以不需要修改
-    if (err.response && err.response.status == 403) {
       store.dispatch('user/logout')
-      // 403则重回首页，采用节流的写法
+      // 401则重回首页，采用节流的写法
       if (done) {
         done = false
         MessageBox.alert('非法操作,请重新登录！', '操作异常', {
@@ -60,7 +45,17 @@ function baseRequest(options) {
           done = true
         }, 1000)
       }
-    } else if (err.response && err.response.status == 500) {
+    } else if (data.status === 401) {
+      // 所有的reject都被catch捕获
+      return Promise.reject({ msg: res.data.msg, res, data })
+    } else if (data.status === 200) {
+      return Promise.resolve(data, res)
+    } else {
+      return Promise.reject({ msg: res.data.msg, res, data })
+    }
+  }).catch((err) => {
+    console.log(err.response || err, 'err_status')
+    if (err.response && err.response.status === 500) {
       Message.error('服务器错误！')
     } else {
       const data = err.data

@@ -10,7 +10,7 @@
                 clearable
                 placeholder="请选择"
                 class="selWidth"
-                @change="get_list()"
+                @change="getList()"
               >
                 <el-option label="总后台" value="0"></el-option>
                 <el-option label="服务商" value="1"></el-option>
@@ -19,14 +19,14 @@
             </el-form-item>
           </el-form>
         </div>
-        <el-button type="primary" label="default" size="small" @click="add_click">添加菜单</el-button>
+        <el-button type="primary" label="default" size="small" @click="addClick">添加菜单</el-button>
       </div>
 
       <!-- s表格 -->
       <el-table :default-expand-all="true" row-key="menu_id" :data="tableData.data" :tree-props="{children: 'children', hasChildren: 'hasChildren'}" style="width: 100%" size="small" highlight-current-row>
 
         <el-table-column prop="menu_name" label="菜单名称" min-width="100">
-          <template slot-scope="scope">
+          <template v-slot="scope">
             <span>{{ scope.row.menu_name + '  [ ' + scope.row.menu_id + '  ]' }}</span>
           </template>
         </el-table-column>
@@ -34,7 +34,7 @@
         <el-table-column prop="route" label="菜单地址" min-width="100" />
 
         <el-table-column prop="icon" label="菜单图标" min-width="80">
-          <template slot-scope="scope">
+          <template v-slot="scope">
             <div class="listPic">
               <i :class="'el-icon-' + scope.row.icon" style="font-size: 20px;" />
             </div>
@@ -42,20 +42,20 @@
         </el-table-column>
 
         <el-table-column label="菜单归属" min-width="80" fixed="right" align="center">
-          <template slot-scope="scope">
-            <div v-if="scope.row.pid == 0">
-              <el-tag v-if="scope.row.menu_type == 0">总后台</el-tag>
-              <el-tag type="success" v-else-if="scope.row.menu_type == 1">服务商</el-tag>
-              <el-tag type="info" v-else>商户端</el-tag>
+          <template v-slot="scope">
+            <div v-if="scope.row.pid === 0">
+              <el-tag v-if="scope.row.menu_type === 0">总后台</el-tag>
+              <el-tag v-else-if="scope.row.menu_type === 1" type="success">服务商</el-tag>
+              <el-tag v-else type="info">商户端</el-tag>
             </div>
           </template>
         </el-table-column>
 
         <el-table-column label="是否PC端" min-width="80" fixed="right" align="center">
-          <template slot-scope="scope">
-            <div v-if="scope.row.pid == 0">
-              <el-tag type="warning" v-if="scope.row.is_pc == 1">PC端</el-tag>
-              <el-tag type="danger" v-else>移动端</el-tag>
+          <template v-slot="scope">
+            <div v-if="scope.row.pid === 0">
+              <el-tag v-if="scope.row.is_pc === 1" type="warning">PC端</el-tag>
+              <el-tag v-else type="danger">移动端</el-tag>
             </div>
           </template>
         </el-table-column>
@@ -63,24 +63,13 @@
         <el-table-column prop="create_time" label="创建时间" min-width="80" />
 
         <el-table-column label="操作" min-width="120" fixed="right" align="center">
-          <template slot-scope="scope">
-            <el-button type="text" size="small" class="mr10" @click="edit_click(scope.row)">编辑</el-button>
+          <template v-slot="scope">
+            <el-button type="text" size="small" class="mr10" @click="editClick(scope.row)">编辑</el-button>
             <el-button type="text" size="small" class="mr10" @click="del(scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
 
-      <!--<div class="block">-->
-      <!--  <el-pagination-->
-      <!--    :page-sizes="[10, 20, 40, 60, 80]"-->
-      <!--    :page-size="menuForm.limit"-->
-      <!--    :current-page="menuForm.page"-->
-      <!--    layout="total, sizes, prev, pager, next, jumper"-->
-      <!--    :total="tableData.total"-->
-      <!--    @size-change="handle_size_change"-->
-      <!--    @current-change="page_change"-->
-      <!--  />-->
-      <!--</div>-->
       <!-- e表格 -->
 
     </el-card>
@@ -93,12 +82,13 @@
         <el-form-item label="父级分类" :label-width="formLabelWidth" prop="p_cate">
           <!--<el-cascader :options="options" :props="{ checkStrictly: true }" clearable></el-cascader>-->
           <el-select v-model="addForm.pid" placeholder="请选择父元素">
-            <el-option label="根目录" value=0></el-option>
+            <el-option label="根目录" value="0"></el-option>
             <el-option
-              v-for="(item,index) in parent_list"
+              v-for="(item) in parent_list"
               :key="item.menu_id"
               :label="item.menu_name"
-              :value="item.menu_id">
+              :value="item.menu_id"
+            >
             </el-option>
           </el-select>
         </el-form-item>
@@ -117,26 +107,26 @@
         <el-form-item label="菜单图标" :label-width="formLabelWidth" prop="icon" class="icon">
           <el-input v-model="addForm.icon" autocomplete="off" clearable>
             <template slot="append">
-              <div class="icon-plus" @click="add_icon('add')"><i class="el-icon-circle-plus-outline"></i></div>
+              <div class="icon-plus" @click="addIcon('add')"><i class="el-icon-circle-plus-outline"></i></div>
             </template>
           </el-input>
         </el-form-item>
 
         <el-form-item label="菜单名称" :label-width="formLabelWidth" prop="menu_name">
-          <el-input v-model="addForm.menu_name" autocomplete="off" placeholder="请输入菜单名称"/>
+          <el-input v-model="addForm.menu_name" autocomplete="off" placeholder="请输入菜单名称" />
         </el-form-item>
 
         <el-form-item label="路由" :label-width="formLabelWidth" prop="route">
-          <el-input v-model="addForm.route" autocomplete="off" placeholder="请输入路由"/>
+          <el-input v-model="addForm.route" autocomplete="off" placeholder="请输入路由" />
         </el-form-item>
 
         <el-form-item label="组件" :label-width="formLabelWidth" prop="component">
-          <el-input v-model="addForm.component" autocomplete="off" placeholder="请输入组件"/>
+          <el-input v-model="addForm.component" autocomplete="off" placeholder="请输入组件" />
         </el-form-item>
 
         <el-form-item label="是否PC端" :label-width="formLabelWidth" prop="router">
-          <el-radio v-model="addForm.is_pc" label= '1'>是</el-radio>
-          <el-radio v-model="addForm.is_pc" label= '0'>否</el-radio>
+          <el-radio v-model="addForm.is_pc" label="1">是</el-radio>
+          <el-radio v-model="addForm.is_pc" label="0">否</el-radio>
         </el-form-item>
 
         <el-form-item label="菜单归属" :label-width="formLabelWidth" prop="router">
@@ -146,7 +136,7 @@
         </el-form-item>
 
         <el-form-item label="备注" :label-width="formLabelWidth" prop="sort">
-          <el-input type="textarea" placeholder="请输入备注内容" v-model="addForm.remark" maxlength="250" show-word-limit>
+          <el-input v-model="addForm.remark" type="textarea" placeholder="请输入备注内容" maxlength="250" show-word-limit>
           </el-input>
         </el-form-item>
 
@@ -157,7 +147,7 @@
       </el-form>
 
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="add_submit('addForm')">确定</el-button>
+        <el-button type="primary" @click="addSubmit('addForm')">确定</el-button>
       </div>
     </el-dialog>
     <!-- e添加菜单 -->
@@ -194,12 +184,13 @@
 
         <el-form-item label="父级分类" :label-width="formLabelWidth" prop="p_cate">
           <el-select v-model="editForm.pid" placeholder="请选择父元素">
-            <el-option label="根目录" value=0></el-option>
+            <el-option label="根目录" value="0"></el-option>
             <el-option
-              v-for="(item,index) in parent_list"
+              v-for="(item) in parent_list"
               :key="item.menu_id"
               :label="item.menu_name"
-              :value="item.menu_id">
+              :value="item.menu_id"
+            >
             </el-option>
           </el-select>
         </el-form-item>
@@ -218,26 +209,26 @@
         <el-form-item label="菜单图标" :label-width="formLabelWidth" prop="icon" class="icon">
           <el-input v-model="editForm.icon" autocomplete="off" clearable>
             <template slot="append">
-              <div class="icon-plus" @click="add_icon('edit')"><i class="el-icon-circle-plus-outline"></i></div>
+              <div class="icon-plus" @click="addIcon('edit')"><i class="el-icon-circle-plus-outline"></i></div>
             </template>
           </el-input>
         </el-form-item>
 
         <el-form-item label="菜单名称" :label-width="formLabelWidth" prop="menu_name">
-          <el-input v-model="editForm.menu_name" autocomplete="off" placeholder="请输入菜单名称"/>
+          <el-input v-model="editForm.menu_name" autocomplete="off" placeholder="请输入菜单名称" />
         </el-form-item>
 
         <el-form-item label="路由" :label-width="formLabelWidth" prop="route">
-          <el-input v-model="editForm.route" autocomplete="off" placeholder="请输入路由"/>
+          <el-input v-model="editForm.route" autocomplete="off" placeholder="请输入路由" />
         </el-form-item>
 
         <el-form-item label="组件" :label-width="formLabelWidth" prop="component">
-          <el-input v-model="editForm.component" autocomplete="off" placeholder="请输入组件"/>
+          <el-input v-model="editForm.component" autocomplete="off" placeholder="请输入组件" />
         </el-form-item>
 
         <el-form-item label="是否PC端" :label-width="formLabelWidth" prop="is_pc">
-          <el-radio v-model="editForm.is_pc" label= '1'>是</el-radio>
-          <el-radio v-model="editForm.is_pc" label= '0'>否</el-radio>
+          <el-radio v-model="editForm.is_pc" label="1">是</el-radio>
+          <el-radio v-model="editForm.is_pc" label="0">否</el-radio>
         </el-form-item>
 
         <el-form-item label="菜单归属" :label-width="formLabelWidth" prop="is_mer">
@@ -247,7 +238,7 @@
         </el-form-item>
 
         <el-form-item label="备注" :label-width="formLabelWidth" prop="remark">
-          <el-input type="textarea" placeholder="请输入备注内容" v-model="editForm.remark" maxlength="250" show-word-limit>
+          <el-input v-model="editForm.remark" type="textarea" placeholder="请输入备注内容" maxlength="250" show-word-limit>
           </el-input>
         </el-form-item>
 
@@ -258,7 +249,7 @@
       </el-form>
 
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="edit_submit('editForm')">确定</el-button>
+        <el-button type="primary" @click="editSubmit('editForm')">确定</el-button>
       </div>
     </el-dialog>
     <!-- e编辑 -->
@@ -268,13 +259,13 @@
 <script>
 import svgIcons from './svg-icons'
 import elementIcons from './element-icons'
-import { menu_pid_search, menu_operate, menu_search, menu_del } from '@/api/system_menu'
+import { OperateMenu, GetMenuList, DelMenu } from '@/api/system_menu'
 
 export default {
-  name: 'Menu',
+  name: 'menus',
   data() {
     return {
-      menu_type:'',
+      menu_type: '',
       parent_list: [],
       formLabelWidth: '120px',
       tableData: {
@@ -285,7 +276,7 @@ export default {
           children: [{
             icon: 'eleme',
             menu_name: '一级菜单',
-            menu_id: 12,
+            menu_id: 12
           }]
         }],
         total: 0
@@ -297,10 +288,10 @@ export default {
       menuForm: {
         page: 1,
         limit: 10,
-        sort: '',
+        sort: ''
       },
       unifiedData: [{
-        name_num: '123',
+        name_num: '123'
       }],
       // s新增
       add_visible: false,
@@ -315,26 +306,16 @@ export default {
         is_pc: '1',
         menu_type: '0',
         is_menu: 1,
-        remark:''
+        remark: ''
       },
       addRules: {
-        menu_name: [{ required: true, message: '请输入菜单名称', change: 'blue' }],
+        menu_name: [{ required: true, message: '请输入菜单名称', change: 'blue' }]
       },
-      options: [{
-        value: 'zhinan',
-        label: '指南',
-        children: [{
-          value: 'shejiyuanze',
-          label: '设计原则'
-        },{
-          value: '123',
-          label: '123'
-        }]
-      }],
+      options: [],
       // e新增
 
       // 菜单图标
-      add_edit: 'add',  // 'add'表示添加菜单打开的，'edit'表示编辑打开的
+      add_edit: 'add', // add表示添加菜单打开的，edit表示编辑打开的
       icon_visible: false,
       // icon_key: '',
       svgIcons,
@@ -354,69 +335,69 @@ export default {
         is_pc: '1',
         menu_type: '0',
         is_menu: 1,
-        remark:''
+        remark: ''
       },
       editRules: {
-        menu_name: [{ required: true, message: '请输入菜单名称', change: 'blue' }],
-      },
+        menu_name: [{ required: true, message: '请输入菜单名称', change: 'blue' }]
+      }
       // e新增
     }
   },
   mounted() {
-    this.get_list();
-    this.get_all_parent_list()
+    this.getList()
+    this.getAllParentList()
   },
   methods: {
-    get_all_parent_list(){
-      menu_pid_search()
+    getAllParentList() {
+      GetMenuList({ menu_type: this.menu_type, pid: 0 })
         .then(res => {
           this.parent_list = res.data
         })
         .catch(err => {
-          this.$message.error(err.data.data)
+          this.$message.error(err.data.msg)
         })
     },
     // 列表
-    get_list() {
-      menu_search({menu_type:this.menu_type})
+    getList() {
+      GetMenuList({ menu_type: this.menu_type })
         .then(res => {
           this.tableData.data = res.data
         })
         .catch(err => {
-          this.$message.error(err.data.data)
+          this.$message.error(err.data.msg)
         })
     },
-    //分页
+    // 分页
     page_change(page) {
       this.menuForm.page = page
-      this.get_list('')
+      this.getList('')
     },
     handle_size_change(val) {
       this.menuForm.limit = val
-      this.get_list('')
+      this.getList('')
     },
 
     // s添加菜单
-    add_click(){
+    addClick() {
       this.add_visible = true
       this.$nextTick(function () {
         this.$refs['addForm'].resetFields()
       })
     },
     // 确定
-    add_submit(formName) {
+    addSubmit(formName) {
       this.$refs[formName].validate(async valid => {
         // 若必填项不为空
         if (valid) {
-          menu_operate(this.addForm)
-            .then(res => {
+          OperateMenu(this.addForm)
+            .then(() => {
               this.$message.success('添加成功')
-              this.get_list()
-              this.get_all_parent_list()
+              this.getList()
+              this.getAllParentList()
               this.add_visible = false
             })
             .catch(err => {
-              this.$message.error(err.data.data)
+              this.$message.error(err.data.msg)
             })
         } else {
           return false
@@ -426,21 +407,18 @@ export default {
     // e添加菜单
 
     // s添加菜单--选择图标
-    add_icon(e){
+    addIcon(e) {
       this.add_edit = e
       this.icon_visible = true
-    },
-    generateIconCode(symbol) {
-      return `<svg-icon icon-class="${symbol}" />`
     },
     generateElementIconCode(symbol) {
       return `<i class="el-icon-${symbol}" />`
     },
-    handleClipboard(text, event,item) {
+    handleClipboard(text, event, item) {
       // clipboard(text, event)
-      if(this.add_edit == 'add'){ // 添加菜单打开
+      if (this.add_edit === 'add') { // 添加菜单打开
         this.addForm.icon = item
-      } else if(this.add_edit == 'edit'){ // 编辑打开
+      } else if (this.add_edit === 'edit') { // 编辑打开
         this.editForm.icon = item
       }
       this.icon_visible = false
@@ -448,12 +426,11 @@ export default {
     // e添加菜单--选择图标
 
     // 编辑
-    edit_click(e) {
-
+    editClick(e) {
       this.editForm.menu_id = e.menu_id
-      if(e.pid == 0){
+      if (e.pid === 0) {
         this.editForm.pid = e.pid.toString()
-      }else{
+      } else {
         this.editForm.pid = e.pid
       }
       this.editForm.is_show = e.is_show
@@ -467,19 +444,19 @@ export default {
       this.edit_visible = true
     },
     // 编辑--保存
-    edit_submit(formName) {
+    editSubmit(formName) {
       this.$refs[formName].validate(async valid => {
         // 若必填项不为空
         if (valid) {
-          menu_operate(this.editForm)
-            .then(res => {
+          OperateMenu(this.editForm)
+            .then(() => {
               this.$message.success('编辑成功')
-              this.get_list()
-              this.get_all_parent_list()
+              this.getList()
+              this.getAllParentList()
               this.edit_visible = false
             })
             .catch(err => {
-              this.$message.error(err.data.data)
+              this.$message.error(err.data.msg)
             })
         } else {
           return false
@@ -493,29 +470,23 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        console.log(e)
-        menu_del(e.menu_id)
-          .then(res=>{
+        // console.log(e)
+        DelMenu({ menu_id: e.menu_id })
+          .then(() => {
             this.$message.success('删除成功！')
-            this.get_list()
-            this.get_all_parent_list()
+            this.getList()
+            this.getAllParentList()
           })
           .catch(err => {
-            this.$message.error(err.data.data)
+            this.$message.error(err.data.msg)
           })
-      }).catch(() => {});
-    },
+      }).catch(() => {})
+    }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-::deep [type=reset],
-[type=submit],
-button,
-html [type=button] {
-    -webkit-appearance: none !important;
-}
 .menu{
   .box-card {
     margin: 20px 20px
