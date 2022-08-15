@@ -16,3 +16,8 @@ export function OperateRole(data) {
   return request.post('/v1/role/OperateRole', data)
 }
 
+// 角色列表查询路由除根元素/demo
+export function GetRoleListNoRoot(data) {
+  return request.get('/v1/role/GetRoleListNoRoot', data)
+}
+

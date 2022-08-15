@@ -152,7 +152,7 @@
   </div>
 </template>
 <script>
-import { GetRoleList, OperateRole, GetRoleListNoRoot } from '@/api/system_role'
+import { GetRoleListNoRoot, OperateRole } from '@/api/system_role'
 import { GetMenuByType } from '@/api/system_menu'
 
 export default {
