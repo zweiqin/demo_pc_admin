@@ -210,7 +210,8 @@ export default {
         role_name: '',
         rules: '',
         rules_mobile: '',
-        role_type: 0
+        role_type: 0,
+        mer_id: 0
       },
       editRules: {
         role_name: [{ required: true, message: '角色名称不能为空', change: 'blue' }]
