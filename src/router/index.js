@@ -1,8 +1,5 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-
-Vue.use(Router)
-
 /* Layout */
 import Layout from '@/layout'
 
@@ -12,6 +9,9 @@ import admin from './modules/admin'
 import menu from './modules/menu'
 import merchant from './modules/merchant'
 import config from './modules/config'
+import test from './modules/test'
+
+Vue.use(Router)
 
 /**
  * Note: sub-menu only appear when route children.length >= 1
@@ -67,6 +67,7 @@ export const constantRoutes = [
   menu,
   merchant,
   config,
+  test, // 测试页面（上线即注释掉）
   {
     path: '/404',
     component: () => import('@/views/error-page/404'),

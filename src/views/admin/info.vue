@@ -252,8 +252,9 @@
 </template>
 
 <script>
-import { AdminSearch, OperateAdmin, GetUserInfo } from '@/api/admin'
+import { AdminSearch, GetUserInfo, OperateAdmin } from '@/api/admin'
 import { GetRoleList } from '@/api/system_role'
+
 export default {
   name: 'info',
   data() {
@@ -467,7 +468,7 @@ export default {
       this.getList('')
     },
     // 修改密码
-    changPwd(e) {
+    changePwd(e) {
       this.changePwdForm.admin_id = e.admin_id
       this.changePwdForm.real_name = e.real_name
       this.change_pwd_visible = true
