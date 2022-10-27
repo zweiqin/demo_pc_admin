@@ -13,15 +13,15 @@ export function Login(data) {
 
 // 用户查询/demo
 export function AdminSearch(data) {
-  return request.get('/v1/admin/GetAdminList', data)
+  return request.get('/v1/SysAdmin/GetAdminList', data)
 }
 
 // 新增/修改用户/删除/修改密码/demo
 export function OperateAdmin(data) {
-  return request.post('/v1/admin/OperateAdmin', data)
+  return request.post('/v1/SysAdmin/OperateAdmin', data)
 }
 
 // 查询某个用户的详情/demo
 export function GetUserInfo(data) {
-  return request.get('/v1/admin/GetUserInfo', data)
+  return request.get('/v1/SysAdmin/GetUserInfo', data)
 }
