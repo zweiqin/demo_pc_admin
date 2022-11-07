@@ -13,6 +13,7 @@
         mode="vertical"
       >
         <sidebar-item v-for="route in menuList" :key="route.route" :item="route" :base-path="route.route" />
+        <!--        <sidebar-item v-for="route in permission_routes" :key="route.path" :item="route" :base-path="route.path" />-->
       </el-menu>
     </el-scrollbar>
   </div>
@@ -53,7 +54,7 @@ export default {
   },
   data() {
     return {
-      menuList:localstorage.get('admin_menu_list')
+      menuList: localstorage.get('admin_menu_list')
     }
   }
 }
